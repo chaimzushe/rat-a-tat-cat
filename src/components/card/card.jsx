@@ -10,9 +10,9 @@ export class Card extends React.Component {
     }
 
     render(){        
-        
+        const url = this.props.show ? this.props.card:  "back";
         return (
-            <img   className="card" src={require('../../../public/assets/images/' + this.props.card + '.jpg')} />      
+            <img   className="card" src={require('../../../public/assets/images/' + url + '.jpg')} />      
         );
     }
 }

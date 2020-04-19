@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Deck = props => {
-    return (<div>
-        Deck goes Here!
-    </div>);
+import {Card} from "../card/card"
+
+export const Deck = props => {
+    return (<Card  card={"back"} />);
 }

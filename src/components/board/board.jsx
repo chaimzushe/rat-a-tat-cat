@@ -3,7 +3,9 @@ import {shuffle} from "../../util/arrayShuffle";
 import "./board.scss";
 
 import {ComputerPlayer} from "../computerPlayer/player";
-import {Player} from "..//Player/Player";
+import {Player} from "../Player/Player";
+import {Deck} from "../deck/deck";
+import {Discarded} from "../Discarded/Discarded";
 const CARDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'draw2', 'peak', 'swap'];
 export default class Board extends React.Component {
 
@@ -14,8 +16,10 @@ export default class Board extends React.Component {
        console.log(this.cards);
        
        this.state = {
-           computerCards: this.cards.slice(0,4),
-           humanCards: this.cards.slice(4, 8)
+           computerCards: this.cards.slice(0, 4),
+           humanCards: this.cards.slice(4, 8),
+           pileCards: this.cards.slice(8),
+           discardCard: this.cards[this.cards.length -1],
        }   
        
     }
@@ -45,6 +49,10 @@ export default class Board extends React.Component {
     render(){
         return <div className="board">
             <ComputerPlayer cards={this.state.computerCards}/>
+            <div className="actions">
+                <Deck/>
+                <Discarded card={this.state.discardCard}/>
+            </div>
             <Player cards={this.state.humanCards}/>
 
         </div>
