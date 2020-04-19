@@ -1,16 +1,18 @@
 import React from 'react';
 import "./card.scss";
-export default class Card extends React.Component {
 
-    constructor({imageUrl}){
+
+export class Card extends React.Component {
+
+    constructor(props){
         super();
-        this.imageUrl = imageUrl;
+        this.imageUrl = props;
     }
 
-    render(){
-        return <div style={{background: "red"}} className="card">
-           
-        </div>
-
+    render(){        
+        
+        return (
+            <img   className="card" src={require('../../../public/assets/images/' + this.props.card + '.jpg')} />      
+        );
     }
 }
