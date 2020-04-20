@@ -22,22 +22,23 @@ export default class Board extends React.Component {
     };
   }
 
-  unpeakCard = (playerCards, idx) => {
-    if(!this.state[playerCards] || !this.state[playerCards][idx].canPeak) return;
+  toggleFlip(show, idx, playerCards){
     let newCards = this.state[playerCards];
     newCards[idx].canPeak = false;
-    newCards[idx].show = true;
+    newCards[idx].show = show;
     this.setState({
       [playerCards]: newCards,
     });
 
+  }
+  unpeakCard = (playerCards, idx) => {
+ const pile = this.state[playerCards];
+ const card = pile && pile[idx] || {};
+ const canRevealCrad = card.canPeak || card.isTopOfPile;
+    if(!canRevealCrad) { return;}
+    this.toggleFlip(true, idx, playerCards)
     setTimeout( _ => {
-      let newCards = this.state[playerCards];
-      newCards[idx].canPeak = false;
-    newCards[idx].show = false;
-      this.setState({
-        [playerCards]: newCards,
-      });
+      this.toggleFlip(false, idx, playerCards)
     }, 2000);
   }
 
