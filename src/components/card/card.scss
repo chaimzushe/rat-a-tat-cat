@@ -25,6 +25,13 @@
             cursor: pointer;
         }
     }
+
+    &--top-pile{
+      cursor: pointer;
+      &:hover{
+        transform: scale(1.1);
+      }
+    }
 }
     
     

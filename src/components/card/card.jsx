@@ -10,6 +10,9 @@ export const Card = (props) => {
   if (card.canPeak) {
     className += " card--flipable";
   }
+  if(card.isTopOfPile) {
+    className += " card--top-pile";
+  }
 
   const image = card.show ? card.card : "back";
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
