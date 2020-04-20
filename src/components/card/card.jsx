@@ -1,45 +1,23 @@
-import React from 'react';
+import React, { useContext } from "react";
+import { CardContext } from "../board/board";
 import "./card.scss";
 
+export const Card = (props) => {
+  const context = useContext(CardContext);
+  let { card } = props;
 
-export class Card extends React.Component {
+  let className = "card";
+  if (card.canPeak) {
+    className += " card--flipable";
+  }
 
-    constructor(props){
-        super();
-        this.state = {
-            card: props.card
-        }
-    }
+  const image = card.show ? card.card : "back";
+  let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
+  const divStyle = {
+    backgroundImage: "url(" + imageUrl + ")",
+  };
 
-    flipCard = () => {
-        if(!this.props.card.canPeak) return;
-        this.setState({
-           card: {...this.state.card, show: true}
-        });
-        setTimeout( x => {
-            this.setState({
-                card: {...this.state.card, show: false}
-             });
-        }, 1000)
-    }
-    render(){   
-        let {card} = this.state;   
-        
-        let className = "card"
-        if(card.canPeak) {
-            className += " card--flipable"
-        }
-        
-        const url = card.show ? card.card:  "back";
-        let baseUrl = require(`../../../public/assets/images/${url}.jpg`)
-        const divStyle = {
-            backgroundImage: 'url(' + baseUrl + ')'
-        }
-
-        return (
-            <div style={divStyle} onClick={this.flipCard} className={className}>
-            </div>
-            
-        );
-    }
-}
+  return (
+    <div style={divStyle} onClick={x => context.unpeakCard(props.player, props.index)} className={className}></div>
+  );
+};

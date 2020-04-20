@@ -7,7 +7,7 @@ import {Card} from "../card/card"
 export const Deck = props => {
     return (<ul className="deck">
         {props.cards.map( (c,i) => {
-          return  <Card key={i} card={c}/>
+          return  <Card index={i} key={i} card={c}/>
         })}
     </ul>)
 }
