@@ -1,0 +1,22 @@
+.deck  {
+
+    position: relative;
+   width: 300px;
+}
+
+.deck .card {
+    position: absolute;
+    border: 1px solid gray;
+}
+
+@for $i from 1 through 20 {
+    
+    .deck .card:nth-last-child(#{$i})  {
+        bottom: 0px  +$i;
+        left: 0px + $i;
+       
+    }
+}
+
+
+

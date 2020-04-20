@@ -6,11 +6,11 @@ export class Card extends React.Component {
 
     constructor(props){
         super();
-        this.imageUrl = props;
     }
 
-    render(){        
-        const url = this.props.show ? this.props.card:  "back";
+    render(){      
+ 
+        const url = this.props.card.show ? this.props.card.card:  "back";
         return (
             <img   className="card" src={require('../../../public/assets/images/' + url + '.jpg')} />      
         );

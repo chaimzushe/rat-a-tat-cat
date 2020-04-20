@@ -13,21 +13,23 @@ export default class Board extends React.Component {
     constructor(){
        super();
        this.cards = this.setupAllCards();
-       console.log(this.cards);
-       
+   
        this.state = {
-           computerCards: this.cards.slice(0, 4),
-           humanCards: this.cards.slice(4, 8),
-           pileCards: this.cards.slice(8),
-           discardCard: this.cards[this.cards.length -1],
+           computerCards: this.dealcards(4),
+           humanCards: this.dealcards(4),
+           pileCards: this.cards.slice(0, 20),
+           discardCard: this.dealcards(1),
        }   
        
     }
 
-    componentDidMount(){
-        
+    dealcards(amount){
+        let cardsToDeal = this.cards.slice(0, amount);
+        this.cards = this.cards.slice(amount);
+        return cardsToDeal;
     }
 
+  
     setupAllCards(){
         const cards = [];
         let cardToAdd = [];
@@ -41,7 +43,8 @@ export default class Board extends React.Component {
            }
            cards.push(...cardToAdd);
         });
-        return shuffle(cards);
+        let cardsShuffled = shuffle(cards);
+        return cardsShuffled.map(c => ({card: c, canPeak: false, show: false}));
     }
 
 
@@ -50,8 +53,8 @@ export default class Board extends React.Component {
         return <div className="board">
             <ComputerPlayer cards={this.state.computerCards}/>
             <div className="actions">
-                <Deck/>
-                <Discarded card={this.state.discardCard}/>
+                <Deck cards={this.state.pileCards}/>
+                <Discarded cards={this.state.discardCard}/>
             </div>
             <Player cards={this.state.humanCards}/>
 

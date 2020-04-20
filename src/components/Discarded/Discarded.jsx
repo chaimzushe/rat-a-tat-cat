@@ -1,7 +1,8 @@
 import React from 'react';
 
-import {Card} from "../card/card"
+import {Deck} from "../deck/deck"
 
 export const Discarded = props => {
-    return (<Card  show card={props.card} />);
+    props.cards.forEach( c => c.show = true);
+    return <Deck cards={props.cards}/>
 }
