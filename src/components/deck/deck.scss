@@ -12,8 +12,8 @@
 @for $i from 1 through 20 {
     
     .deck .card:nth-last-child(#{$i})  {
-        bottom: 0px  +$i;
-        left: 0px + $i;
+        top: 0px  +$i;
+        right: 0px + $i;
        
     }
 }

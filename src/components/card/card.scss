@@ -2,8 +2,45 @@
     height: 220px;
     width: 150px;
     border-radius: 12px;
-    background-color: #fff;
     margin: 10px;
-    display: inline-block;
-    background-image: url("/public/assets/images/0.jpg");
+    display: block;
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    &--flipable{
+        &:before{
+            content: "peak";
+            background-color: red;
+            animation: pulse 1s infinite ease-in;
+            border-radius: 30px;
+            padding: 10px;
+            position: absolute;
+            bottom: 100px;
+            left: 50px;
+            font-weight: 700;
+            display: block;
+            margin: auto;
+            color: white;
+            cursor: pointer;
+        }
+    }
 }
+    
+    
+
+
+
+@keyframes pulse {
+    from {
+      transform: scale3d(1, 1, 1);
+    }
+  
+    50% {
+      transform: scale3d(1.05, 1.05, 1.05);
+    }
+  
+    to {
+      transform: scale3d(1, 1, 1);
+    }
+  }
