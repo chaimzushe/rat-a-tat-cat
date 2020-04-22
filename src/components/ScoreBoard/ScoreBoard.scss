@@ -6,14 +6,30 @@
 }
 
 .score{
-    background-color: black;
+    background-color: #ff1d1d;;
     color:white;
     padding: 12px;
     font-size: 30px; 
+    border-radius: 14px;
+    width: 200px;
+    text-align: center;
+    position: relative;
 }
 
-.winner {
-    animation: tada 1s infinite ease-in;
+.winner {   
+    &:before{
+        content: 'Winner';
+        animation: tada 1s infinite ease-in;
+        background-color: #2540b7;
+        display: block;
+        position: absolute;
+        top: -15px;
+        padding: 8px;
+        border-radius: 12px;
+        font-size: 17px;
+        right: 0px;
+
+    }
 }
 
   

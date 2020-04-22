@@ -32,8 +32,19 @@ export default class Board extends React.Component {
         return i + value;
       }, 0);
   }
+  startGame(){
+    this.cards = this.setupAllCards();
+    this.setState({
+      gameOver: false,
+      ...this.getSeparatedCards()
+     })
 
-  finishGame = () => {
+  }
+
+  handleBtnClick = () => {
+    if(this.state.gameOver){
+      return this.startGame();
+    }
     const humanCards = [...this.state.humanCards]
     humanCards.forEach((c) => c.peakable = false );
    this.setState({gameOver: true, humanCards})
@@ -130,6 +141,8 @@ export default class Board extends React.Component {
   }
 
   render() {
+    
+    const btnTxet = this.state.gameOver ?  'New Game' : 'Rat-Tat-Cat'; 
     return (
       <DndProvider backend={Backend}>
         <CardContext.Provider value={{ addCard: this.addCard, gameOver: this.state.gameOver }}>
@@ -140,7 +153,7 @@ export default class Board extends React.Component {
                 <Deck cards={this.state.pileCards} />
                 <Deck cards={this.state.discardCard} />
               </div>}
-                <button onClick={this.finishGame} className="end-game"> Rat A Tat Cat </button>
+                <button onClick={this.handleBtnClick} className="end-game"> {btnTxet} </button>
             </div>
             <Player cards={this.state.humanCards} />
           </div>
