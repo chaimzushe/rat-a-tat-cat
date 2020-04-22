@@ -7,7 +7,7 @@ import { DndProvider } from "react-dnd";
 import { CARDS } from "../../data/cards";
 import Card from "../../models/card";
 import Backend from "react-dnd-html5-backend";
-
+import {ScoreBoard} from "../ScoreBoard/ScoreBoard";
 export const cardTypes = {
   humanCard: "humanCard",
   discardedPile: "discardedPile",
@@ -24,12 +24,19 @@ export default class Board extends React.Component {
       gameOver: false,
       ...this.getSeparatedCards()
     }
-    
-    
+  }
+
+  getScore(player){
+      return  this.state[player].reduce( (i, c) => { 
+        const value = c.value <= 9 ? c.value : 9;
+        return i + value;
+      }, 0);
   }
 
   finishGame = () => {
-   this.setState({gameOver: true})
+    const humanCards = [...this.state.humanCards]
+    humanCards.forEach((c) => c.peakable = false );
+   this.setState({gameOver: true, humanCards})
   }
 
   getSeparatedCards() {
@@ -129,10 +136,10 @@ export default class Board extends React.Component {
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
-              <div className="piles">
+              { this.state.gameOver ? <ScoreBoard human={this.getScore('humanCards')} computer={this.getScore('computerCards')} /> : <div className="piles">
                 <Deck cards={this.state.pileCards} />
                 <Deck cards={this.state.discardCard} />
-              </div>
+              </div>}
                 <button onClick={this.finishGame} className="end-game"> Rat A Tat Cat </button>
             </div>
             <Player cards={this.state.humanCards} />

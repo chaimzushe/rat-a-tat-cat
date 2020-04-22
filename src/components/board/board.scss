@@ -16,7 +16,6 @@
 }
 
 .piles{
-    
     display: flex;
     flex: 1;
     justify-content: center;
@@ -26,15 +25,15 @@
     width: 180px;
     padding: 12px;
     border-radius: 42px;
-    color: #980000;
-    background-color: greenyellow;
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #980000;
     height: 180px;
     font-size: 26px;
     margin-right: 125px;
     outline: none;
     &:hover{
-        cursor: pointer;
-        color: white;
-        background-color: #980000;
+       transform: scale();
+        
     }
 }
