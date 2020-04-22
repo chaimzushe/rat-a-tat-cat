@@ -6,7 +6,7 @@ export const CardStrip = (props) => {
   return (
     <div className="card-row">
       <ul className="cards">
-        {props.cards.map((c,i) => <Card player={props.player} index={i} key={i} card={c} />)}
+        {props.cards.map((c,i) => <Card key={i} card={c} />)}
       </ul>
     </div>
   );

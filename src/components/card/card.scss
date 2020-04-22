@@ -10,7 +10,7 @@
     background-size: cover;
     &--flipable{
         &:before{
-            content: "peak";
+            content: "Peek";
             background-color: #432080;
             animation: pulse 1s infinite ease-in;
             border-radius: 30px;
@@ -25,6 +25,13 @@
             cursor: pointer;
         }
     }
+
+    &--over{
+      border: 2px solid red;
+      box-sizing: border-box;
+      
+    }
+
 
     &--top-pile{
       cursor: pointer;

@@ -5,11 +5,14 @@
 }
 
 .deck .card {
-    position: absolute;
     border: 1px solid gray;
 }
 
-@for $i from 1 through 20 {
+.deck .card {
+    position: absolute;
+}
+
+@for $i from 1 through 45 {
     
     .deck .card:nth-last-child(#{$i})  {
         top: 0px  +$i;
