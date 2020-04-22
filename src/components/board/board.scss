@@ -10,8 +10,31 @@
 
 .actions{
     display: flex;
-    justify-content: center;
     margin: 30px 0px;
     height: 300px;
+    align-items: center;
+}
+
+.piles{
     
+    display: flex;
+    flex: 1;
+    justify-content: center;
+}
+
+.end-game{
+    width: 180px;
+    padding: 12px;
+    border-radius: 42px;
+    color: #980000;
+    background-color: greenyellow;
+    height: 180px;
+    font-size: 26px;
+    margin-right: 125px;
+    outline: none;
+    &:hover{
+        cursor: pointer;
+        color: white;
+        background-color: #980000;
+    }
 }

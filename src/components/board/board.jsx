@@ -20,7 +20,16 @@ export default class Board extends React.Component {
   constructor() {
     super();
     this.cards = this.setupAllCards();
-    this.state = this.getSeparatedCards();
+    this.state = {
+      gameOver: false,
+      ...this.getSeparatedCards()
+    }
+    
+    
+  }
+
+  finishGame = () => {
+   this.setState({gameOver: true})
   }
 
   getSeparatedCards() {
@@ -48,7 +57,7 @@ export default class Board extends React.Component {
 
   addCard = (cardToAdd, cardToDiscard) => {
     
-    debugger
+
     let humanCards = [...this.state.humanCards];
     const disgardPile = [...this.state.discardCard];
     const pickPile = [...this.state.pileCards.slice(0, 20)];
@@ -116,12 +125,15 @@ export default class Board extends React.Component {
   render() {
     return (
       <DndProvider backend={Backend}>
-        <CardContext.Provider value={{ addCard: this.addCard }}>
+        <CardContext.Provider value={{ addCard: this.addCard, gameOver: this.state.gameOver }}>
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
-              <Deck cards={this.state.pileCards} />
-              <Deck cards={this.state.discardCard} />
+              <div className="piles">
+                <Deck cards={this.state.pileCards} />
+                <Deck cards={this.state.discardCard} />
+              </div>
+                <button onClick={this.finishGame} className="end-game"> Rat A Tat Cat </button>
             </div>
             <Player cards={this.state.humanCards} />
           </div>

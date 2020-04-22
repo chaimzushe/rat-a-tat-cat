@@ -58,3 +58,10 @@
       transform: scale3d(1, 1, 1);
     }
   }
+  .hovered {
+    border: 3px solid blue !important; 
+  }
+
+  .highlighted {
+    border: 3px solid red;
+  }

@@ -1,7 +1,9 @@
 .deck  {
 
     position: relative;
-   width: 300px;
+    width: 300px;
+    height: 300PX;
+    
 }
 
 .deck .card {
@@ -16,7 +18,7 @@
     
     .deck .card:nth-last-child(#{$i})  {
         top: 0px  +$i;
-        right: 0px + $i;
+        right: 80px + $i;
        
     }
 }

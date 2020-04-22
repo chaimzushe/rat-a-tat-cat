@@ -8,7 +8,7 @@ export const Card = (props) => {
   const getRef = (card) => {
     if (
       card.type === cardTypes.humanCard ||
-      (card.type === cardTypes.discardedPile && isDragging) 
+      (card.type === cardTypes.discardedPile) 
     )
       return drop;
     else {
@@ -46,7 +46,7 @@ export const Card = (props) => {
         card.type !== cardTypes.discardedPile &&
         card.type !== cardTypes.humanCard
       )
-        return alert("Only drop in to your pile");
+       return alert("Only drop in to your pile");
       context.addCard(item.card, card);
     },
     hover: (item, monitor) => {},
@@ -58,9 +58,16 @@ export const Card = (props) => {
     },
   });
 
-  const className = card.generateClasses();
+  let className = card.generateClasses();
+  if(hovered) {
+    className += ' hovered';
+  }
 
-  const image = card.type === "discardedPile" || peaking ? card.value : "back";
+  if(highlighted) {
+    className += ' highlighted';
+  }
+  console.log(context)
+  const image = ((card.type === "discardedPile") || peaking || context.gameOver) ? card.value : 'back';
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {
     backgroundImage: "url(" + imageUrl + ")",
