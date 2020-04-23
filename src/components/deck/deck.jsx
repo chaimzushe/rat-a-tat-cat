@@ -8,7 +8,7 @@ export const Deck = (props) => {
   return (
     <ul className="deck">
       {props.cards.map((c, i) => {
-        return <Card key={i} className="card-wrap" card={c} />;
+        return <Card key={i} topOfPile={i === props.cards.length -1 || i === props.cards.length -2} className="card-wrap" card={c} />;
       })}
     </ul>
   );

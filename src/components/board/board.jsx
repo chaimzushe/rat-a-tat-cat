@@ -75,7 +75,7 @@ export default class Board extends React.Component {
 
   addCard = (cardToAdd, cardToDiscard) => {
     
-
+    
     let humanCards = [...this.state.humanCards];
     const disgardPile = [...this.state.discardCard];
     const pickPile = [...this.state.pileCards];

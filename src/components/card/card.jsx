@@ -4,14 +4,16 @@ import "./card.scss";
 import { useDrop, useDrag } from "react-dnd";
 import { cardTypes } from "../board/board";
 
+
 export const Card = (props) => {
   const getRef = (card) => {
+    console.log('ref is', {ref: dragRef().current} , {b: drop().current})
     if (
       card.type === cardTypes.humanCard ||
       (card.type === cardTypes.discardedPile) 
     )
       return drop;
-    else {
+    else if(card.type === cardTypes.discardedPile || card.type === cardTypes.pickingPile){
       return dragRef;
     }
   };
@@ -71,12 +73,13 @@ export const Card = (props) => {
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {
     backgroundImage: "url(" + imageUrl + ")",
+    opacity: isDragging ? 0 : 1
   };
 
   return (
     <div
       ref={getRef(card)}
-      style={divStyle}
+      style={(props.topOfPile || card.type === cardTypes.humanCard || card.type === cardTypes.computerCard) ? divStyle : {}}
       onClick={peak}
       className={className}
     ></div>
