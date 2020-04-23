@@ -7,7 +7,7 @@ import { cardTypes } from "../board/board";
 
 export const Card = (props) => {
   const getRef = (card) => {
-    console.log('ref is', {ref: dragRef().current} , {b: drop().current})
+    
     if (
       card.type === cardTypes.humanCard ||
       (card.type === cardTypes.discardedPile) 
