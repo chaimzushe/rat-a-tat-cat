@@ -78,7 +78,7 @@ export default class Board extends React.Component {
 
     let humanCards = [...this.state.humanCards];
     const disgardPile = [...this.state.discardCard];
-    const pickPile = [...this.state.pileCards.slice(0, 20)];
+    const pickPile = [...this.state.pileCards];
 
     humanCards.forEach((c) => (c.peakable = false));
 
