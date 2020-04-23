@@ -19,8 +19,14 @@
     .deck .card:nth-last-child(#{$i})  {
         top: 0px  +$i;
         right: 80px + $i;
-       
+        display: none;
     }
+  
+}
+
+.deck .card:nth-last-child(-n+10) {
+    /*declarations*/
+    display: block;
 }
 
 
