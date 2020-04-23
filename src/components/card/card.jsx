@@ -6,6 +6,8 @@ import { cardTypes } from "../board/board";
 
 
 export const Card = (props) => {
+
+ 
   const getRef = (card) => {
     
     if (
@@ -18,16 +20,27 @@ export const Card = (props) => {
     }
   };
   const peak = () => {
-    if (!card.peakable && card.type !== "pickingPile") {
+    if (!card.peakable && card.type !== cardTypes.pickingPile) {
       return;
     }
     setPeaking(true);
+    if(card.type === cardTypes.pickingPile){
+      if(['peak', 'draw2', 'swap'].includes(card.value) ) {
+        context.handlePowerCards(card.value);
+      }
+      
+    }
     if (!card.peakable) return;
-    card.peakable = false;
-    setTimeout((x) => setPeaking(false), 2000);
+    if(context.humanCards.filter(c => c.peakable).length > 2) {
+      context.removePeakable()
+    } else{
+      card.peakable = false;
+    }
+    setTimeout((x) => setPeaking(false), 1000);
   };
 
   const context = useContext(CardContext);
+ 
   let { card } = props;
 
   const [peaking, setPeaking] = useState(false);
@@ -68,7 +81,7 @@ export const Card = (props) => {
   if(highlighted) {
     className += ' highlighted';
   }
-  console.log(context)
+
   const image = ((card.type === "discardedPile") || peaking || context.gameOver) ? card.value : 'back';
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {

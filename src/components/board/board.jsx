@@ -7,7 +7,7 @@ import { DndProvider } from "react-dnd";
 import { CARDS } from "../../data/cards";
 import Card from "../../models/card";
 import Backend from "react-dnd-html5-backend";
-import {ScoreBoard} from "../ScoreBoard/ScoreBoard";
+import { ScoreBoard } from "../ScoreBoard/ScoreBoard";
 export const cardTypes = {
   humanCard: "humanCard",
   discardedPile: "discardedPile",
@@ -22,33 +22,58 @@ export default class Board extends React.Component {
     this.cards = this.setupAllCards();
     this.state = {
       gameOver: false,
-      ...this.getSeparatedCards()
-    }
+      ...this.getSeparatedCards(),
+    };
+
+    this.contextValue = {
+      addCard: this.addCard,
+      gameOver: this.state.gameOver,
+      handlePowerCards: this.handlePowerCards,
+      humanCards: this.state.humanCards,
+      removePeakable: this.removePeakable,
+    };
   }
 
-  getScore(player){
-      return  this.state[player].reduce( (i, c) => { 
-        const value = c.value <= 9 ? c.value : 9;
-        return i + value;
-      }, 0);
+  handlePowerCards = (value) => {
+    if (value === "peak") {
+      const humanCards = this.state.humanCards;
+      humanCards.forEach((c) => (c.peakable = true));
+      this.setState({ humanCards });
+    } else if (value === "draw2") {
+     // alert("draw2");
+    } else {
+      //alert("swap");
+    }
+  };
+
+  removePeakable = () => {
+    const humanCards = this.state.humanCards;
+    humanCards.forEach((c) => (c.peakable = false));
+    this.setState({ humanCards });
+  };
+
+  getScore(player) {
+    return this.state[player].reduce((i, c) => {
+      const value = c.value <= 9 ? c.value : 9;
+      return i + value;
+    }, 0);
   }
-  startGame(){
+  startGame() {
     this.cards = this.setupAllCards();
     this.setState({
       gameOver: false,
-      ...this.getSeparatedCards()
-     })
-
+      ...this.getSeparatedCards(),
+    });
   }
 
   handleBtnClick = () => {
-    if(this.state.gameOver){
+    if (this.state.gameOver) {
       return this.startGame();
     }
-    const humanCards = [...this.state.humanCards]
-    humanCards.forEach((c) => c.peakable = false );
-   this.setState({gameOver: true, humanCards})
-  }
+    const humanCards = [...this.state.humanCards];
+    humanCards.forEach((c) => (c.peakable = false));
+    this.setState({ gameOver: true, humanCards });
+  };
 
   getSeparatedCards() {
     return {
@@ -74,36 +99,38 @@ export default class Board extends React.Component {
   }
 
   addCard = (cardToAdd, cardToDiscard) => {
-    
-    
     let humanCards = [...this.state.humanCards];
     const disgardPile = [...this.state.discardCard];
     const pickPile = [...this.state.pileCards];
 
     humanCards.forEach((c) => (c.peakable = false));
 
+    const insertHumanCardAtIndex = humanCards.findIndex(
+      (c) => c.id === cardToDiscard.id
+    );
 
-    const insertHumanCardAtIndex = humanCards.findIndex(c => c.id === cardToDiscard.id);
-    
- 
-    if (cardToAdd.type === cardTypes.pickingPile) {  // Picked from picking pile    
-        pickPile.pop();
-    } else if (cardToAdd.type === cardTypes.discardedPile) {  // took from disgard pile
+    if (cardToAdd.type === cardTypes.pickingPile) {
+      // Picked from picking pile
+      pickPile.pop();
+    } else if (cardToAdd.type === cardTypes.discardedPile) {
+      // took from disgard pile
       disgardPile.pop();
     }
-    
-    
-    if (cardToAdd.type === cardTypes.pickingPile && cardToDiscard.type !==  cardTypes.humanCard) {
-      cardToAdd.type = cardTypes.discardedPile
-      disgardPile.push(cardToAdd)
+
+    if (
+      cardToAdd.type === cardTypes.pickingPile &&
+      cardToDiscard.type !== cardTypes.humanCard
+    ) {
+      cardToAdd.type = cardTypes.discardedPile;
+      disgardPile.push(cardToAdd);
       return this.setState({
         humanCards: humanCards,
         discardCard: disgardPile,
-        pileCards: pickPile
+        pileCards: pickPile,
       });
     } else {
-        disgardPile.push(cardToDiscard);
-        cardToDiscard.type = cardTypes.discardedPile
+      disgardPile.push(cardToDiscard);
+      cardToDiscard.type = cardTypes.discardedPile;
     }
     humanCards[insertHumanCardAtIndex] = cardToAdd;
     cardToAdd.type = cardTypes.humanCard;
@@ -111,7 +138,7 @@ export default class Board extends React.Component {
     this.setState({
       humanCards: humanCards,
       discardCard: disgardPile,
-      pileCards: pickPile
+      pileCards: pickPile,
     });
   };
 
@@ -141,19 +168,28 @@ export default class Board extends React.Component {
   }
 
   render() {
-    
-    const btnTxet = this.state.gameOver ?  'New Game' : 'Rat-Tat-Cat'; 
+    const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
     return (
       <DndProvider backend={Backend}>
-        <CardContext.Provider value={{ addCard: this.addCard, gameOver: this.state.gameOver }}>
+        <CardContext.Provider value={this.contextValue}>
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
-              { this.state.gameOver ? <ScoreBoard human={this.getScore('humanCards')} computer={this.getScore('computerCards')} /> : <div className="piles">
-                <Deck cards={this.state.pileCards} />
-                <Deck cards={this.state.discardCard} />
-              </div>}
-                <button onClick={this.handleBtnClick} className="end-game"> {btnTxet} </button>
+              {this.state.gameOver ? (
+                <ScoreBoard
+                  human={this.getScore("humanCards")}
+                  computer={this.getScore("computerCards")}
+                />
+              ) : (
+                <div className="piles">
+                  <Deck cards={this.state.pileCards} />
+                  <Deck cards={this.state.discardCard} />
+                </div>
+              )}
+              <button onClick={this.handleBtnClick} className="end-game">
+                {" "}
+                {btnTxet}{" "}
+              </button>
             </div>
             <Player cards={this.state.humanCards} />
           </div>

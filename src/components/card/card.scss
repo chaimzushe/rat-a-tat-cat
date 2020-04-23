@@ -27,12 +27,6 @@
         }
     }
 
-    &--over{
-      border: 2px solid red;
-      
-      
-    }
-
 
     &--top-pile{
       cursor: pointer;
@@ -63,10 +57,5 @@
     border: 3px solid blue !important; 
   }
 
-  .highlighted {
-    border: 3px solid red;
-  }
+ 
 
-  .a {
-    transform: scale(1.5);
-  }
