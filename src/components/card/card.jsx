@@ -11,7 +11,7 @@ export const Card = (props) => {
   const getRef = (card) => {
     
     if (
-      card.type === cardTypes.humanCard ||
+      card.type === cardTypes[context.turnToPlay] ||
       (card.type === cardTypes.discardedPile) 
     )
       return drop;
@@ -31,7 +31,7 @@ export const Card = (props) => {
       
     }
     if (!card.peakable) return;
-    if(context.humanCards.filter(c => c.peakable).length > 2) {
+    if(context[context.turnToPlay + 's'].filter(c => c.peakable).length > 2) {
       context.removePeakable()
     } else{
       card.peakable = false;
@@ -59,7 +59,7 @@ export const Card = (props) => {
     drop: (item, monitor) => {
       if (
         card.type !== cardTypes.discardedPile &&
-        card.type !== cardTypes.humanCard
+        card.type !== cardTypes[context.turnToPlay]
       )
        return alert("Only drop in to your pile");
       context.addCard(item.card, card);
@@ -81,7 +81,7 @@ export const Card = (props) => {
   if(highlighted) {
     className += ' highlighted';
   }
-
+  console.log(context.gameOver)
   const image = ((card.type === "discardedPile") || peaking || context.gameOver) ? card.value : 'back';
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {

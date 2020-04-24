@@ -22,34 +22,40 @@ export default class Board extends React.Component {
     this.cards = this.setupAllCards();
     this.state = {
       gameOver: false,
+      turnToPlay: 'humanCard',
       ...this.getSeparatedCards(),
     };
+  }
 
-    this.contextValue = {
+  getContextValue = () => {
+    return {
       addCard: this.addCard,
       gameOver: this.state.gameOver,
       handlePowerCards: this.handlePowerCards,
       humanCards: this.state.humanCards,
+      computerCards: this.state.computerCards,
       removePeakable: this.removePeakable,
+      
+      turnToPlay: this.state.turnToPlay
     };
-  }
+  };
 
   handlePowerCards = (value) => {
     if (value === "peak") {
-      const humanCards = this.state.humanCards;
-      humanCards.forEach((c) => (c.peakable = true));
-      this.setState({ humanCards });
+      const cards = this.state[this.state.turnToPlay + 's'];
+      cards.forEach((c) => (c.peakable = true));
+      this.setState({ [this.state.turnToPlay + 's']: cards });
     } else if (value === "draw2") {
-     // alert("draw2");
+      // alert("draw2");
     } else {
       //alert("swap");
     }
   };
 
   removePeakable = () => {
-    const humanCards = this.state.humanCards;
-    humanCards.forEach((c) => (c.peakable = false));
-    this.setState({ humanCards });
+    const cards = this.state[this.state.turnToPlay + 's'];
+      cards.forEach((c) => (c.peakable = false));
+      this.setState({ [this.state.turnToPlay + 's']: cards });
   };
 
   getScore(player) {
@@ -70,9 +76,14 @@ export default class Board extends React.Component {
     if (this.state.gameOver) {
       return this.startGame();
     }
-    const humanCards = [...this.state.humanCards];
-    humanCards.forEach((c) => (c.peakable = false));
-    this.setState({ gameOver: true, humanCards });
+    var audio = document.getElementById("audio");
+    audio.play();
+
+    setTimeout(() => {
+      const humanCards = [...this.state.humanCards];
+      humanCards.forEach((c) => (c.peakable = false));
+      this.setState({ gameOver: true, humanCards });
+    }, 3000);
   };
 
   getSeparatedCards() {
@@ -99,13 +110,14 @@ export default class Board extends React.Component {
   }
 
   addCard = (cardToAdd, cardToDiscard) => {
-    let humanCards = [...this.state.humanCards];
+    debugger
+    let playerCards = [...this.state[this.state.turnToPlay + 's']];
     const disgardPile = [...this.state.discardCard];
     const pickPile = [...this.state.pileCards];
 
-    humanCards.forEach((c) => (c.peakable = false));
+    playerCards.forEach((c) => (c.peakable = false));
 
-    const insertHumanCardAtIndex = humanCards.findIndex(
+    const insertcardAtIndex = playerCards.findIndex(
       (c) => c.id === cardToDiscard.id
     );
 
@@ -119,26 +131,30 @@ export default class Board extends React.Component {
 
     if (
       cardToAdd.type === cardTypes.pickingPile &&
-      cardToDiscard.type !== cardTypes.humanCard
+      cardToDiscard.type !== cardTypes[this.state.turnToPlay]
     ) {
       cardToAdd.type = cardTypes.discardedPile;
       disgardPile.push(cardToAdd);
+      const turnToPlay = this.state.turnToPlay === 'humanCard' ? 'computerCard' : 'humanCard'
       return this.setState({
-        humanCards: humanCards,
+        [playerCards]: playerCards,
         discardCard: disgardPile,
         pileCards: pickPile,
+        turnToPlay
       });
     } else {
       disgardPile.push(cardToDiscard);
       cardToDiscard.type = cardTypes.discardedPile;
     }
-    humanCards[insertHumanCardAtIndex] = cardToAdd;
-    cardToAdd.type = cardTypes.humanCard;
-
+    playerCards[insertcardAtIndex] = cardToAdd;
+    cardToAdd.type = cardTypes[this.state.turnToPlay];
+    
+    const turnToPlay = this.state.turnToPlay === 'humanCard' ? 'computerCard' : 'humanCard'
     this.setState({
-      humanCards: humanCards,
+      [this.state.turnToPlay + 's']: playerCards,
       discardCard: disgardPile,
       pileCards: pickPile,
+      turnToPlay
     });
   };
 
@@ -171,7 +187,7 @@ export default class Board extends React.Component {
     const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
     return (
       <DndProvider backend={Backend}>
-        <CardContext.Provider value={this.contextValue}>
+        <CardContext.Provider value={this.getContextValue()}>
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
@@ -187,8 +203,11 @@ export default class Board extends React.Component {
                 </div>
               )}
               <button onClick={this.handleBtnClick} className="end-game">
-                {" "}
-                {btnTxet}{" "}
+                <audio
+                  id="audio"
+                  src={require("../../audio/rat-a.mp3")}
+                ></audio>
+                {btnTxet}
               </button>
             </div>
             <Player cards={this.state.humanCards} />
