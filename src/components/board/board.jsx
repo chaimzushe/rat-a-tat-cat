@@ -110,7 +110,6 @@ export default class Board extends React.Component {
   }
 
   addCard = (cardToAdd, cardToDiscard) => {
-    debugger
     let playerCards = [...this.state[this.state.turnToPlay + 's']];
     const disgardPile = [...this.state.discardCard];
     const pickPile = [...this.state.pileCards];
