@@ -27,18 +27,13 @@
         }
     }
 
-
-    &--top-pile{
-      cursor: pointer;
-      &:hover{
-        transform: scale(1.1);
-      }
-    }
 }
     
     
 
-
+.candrop{
+  border: 5px solid;
+}
 
 @keyframes pulse {
     from {

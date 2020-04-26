@@ -81,7 +81,10 @@ export const Card = (props) => {
   if(highlighted) {
     className += ' highlighted';
   }
-  console.log(context.gameOver)
+  if((card.type === context.turnToPlay || card.type === cardTypes.discardedPile || card.type === cardTypes.pickingPile) && !context.gameOver){
+    className += " candrop"
+  }
+
   const image = ((card.type === "discardedPile") || peaking || context.gameOver) ? card.value : 'back';
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {

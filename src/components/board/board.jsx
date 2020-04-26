@@ -24,6 +24,7 @@ export default class Board extends React.Component {
       gameOver: false,
       turnToPlay: 'humanCard',
       ...this.getSeparatedCards(),
+      turnCounter: null,
     };
   }
 
@@ -35,7 +36,7 @@ export default class Board extends React.Component {
       humanCards: this.state.humanCards,
       computerCards: this.state.computerCards,
       removePeakable: this.removePeakable,
-      
+      turnCounter: this.state.turnCounter,
       turnToPlay: this.state.turnToPlay
     };
   };
@@ -46,7 +47,7 @@ export default class Board extends React.Component {
       cards.forEach((c) => (c.peakable = true));
       this.setState({ [this.state.turnToPlay + 's']: cards });
     } else if (value === "draw2") {
-      // alert("draw2");
+      this.setState({ turnCounter: 1 });
     } else {
       //alert("swap");
     }
@@ -134,12 +135,20 @@ export default class Board extends React.Component {
     ) {
       cardToAdd.type = cardTypes.discardedPile;
       disgardPile.push(cardToAdd);
-      const turnToPlay = this.state.turnToPlay === 'humanCard' ? 'computerCard' : 'humanCard'
+      let turnToPlay = this.state.turnToPlay;
+      let newCount = null;
+      console.log(this.state.turnCounter)
+      if(this.state.turnCounter && this.state.turnCounter <= 2 ){
+        newCount =  this.state.turnCounter + 1
+      } else {
+        turnToPlay = turnToPlay === 'humanCard' ? 'computerCard' : 'humanCard'
+      }
       return this.setState({
         [playerCards]: playerCards,
         discardCard: disgardPile,
         pileCards: pickPile,
-        turnToPlay
+        turnToPlay,
+        turnCounter: newCount
       });
     } else {
       disgardPile.push(cardToDiscard);
