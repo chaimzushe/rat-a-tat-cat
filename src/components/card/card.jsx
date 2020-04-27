@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import { CardContext } from "../board/board";
+import { CardContext } from "../../context/cards-context";
 import "./card.scss";
 import { useDrop, useDrag } from "react-dnd";
-import { cardTypes } from "../board/board";
+import { cardTypes } from "../../data/cardTypes";
 
 
 export const Card = (props) => {

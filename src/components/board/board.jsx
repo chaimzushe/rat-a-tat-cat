@@ -1,29 +1,23 @@
+
 import React from "react";
-import { shuffle } from "../../util/arrayShuffle";
-import "./board.scss";
+import Backend from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
+import {CardContext} from "../../context/cards-context";
 import { Player } from "../Player/Player";
 import { Deck } from "../deck/deck";
-import { DndProvider } from "react-dnd";
-import { CARDS } from "../../data/cards";
-import Card from "../../models/card";
-import Backend from "react-dnd-html5-backend";
+import dealedCards from "../../data/cards";
 import { ScoreBoard } from "../ScoreBoard/ScoreBoard";
-export const cardTypes = {
-  humanCard: "humanCard",
-  discardedPile: "discardedPile",
-  computerCard: "computerCard",
-  pickingPile: "pickingPile",
-};
+import {cardTypes} from "../../data/cardTypes";
 
-export const CardContext = React.createContext({});
+import "./board.scss";
+
 export default class Board extends React.Component {
   constructor() {
     super();
-    this.cards = this.setupAllCards();
     this.state = {
+      ...dealedCards,
       gameOver: false,
       turnToPlay: 'humanCard',
-      ...this.getSeparatedCards(),
       turnCounter: null,
     };
   }
@@ -65,12 +59,14 @@ export default class Board extends React.Component {
       return i + value;
     }, 0);
   }
+
   startGame() {
-    this.cards = this.setupAllCards();
-    this.setState({
+    this.state = {
+      ...dealedCards,
       gameOver: false,
-      ...this.getSeparatedCards(),
-    });
+      turnToPlay: 'humanCard',
+      turnCounter: null,
+    };
   }
 
   handleBtnClick = () => {
@@ -87,28 +83,7 @@ export default class Board extends React.Component {
     }, 3000);
   };
 
-  getSeparatedCards() {
-    return {
-      computerCards: this.cards.filter(
-        (c) => c.type === cardTypes.computerCard
-      ),
-      humanCards: this.cards.filter((c) => c.type === cardTypes.humanCard),
-      pileCards: this.cards.filter((c) => c.type === cardTypes.pickingPile),
-      discardCard: this.cards.filter((c) => c.type === cardTypes.discardedPile),
-    };
-  }
 
-  getCardType(idx) {
-    if (idx <= 3) {
-      return cardTypes.humanCard;
-    } else if (idx <= 7) {
-      return cardTypes.computerCard;
-    } else if (idx === 8) {
-      return cardTypes.discardedPile;
-    } else {
-      return cardTypes.pickingPile;
-    }
-  }
 
   addCard = (cardToAdd, cardToDiscard) => {
     let playerCards = [...this.state[this.state.turnToPlay + 's']];
@@ -165,31 +140,6 @@ export default class Board extends React.Component {
       turnToPlay
     });
   };
-
-  setupAllCards() {
-    const cards = [];
-    let cardToAdd = [];
-    CARDS.forEach((c) => {
-      // Cards 0 - 8
-      if (c < 8) {
-        cardToAdd = [c, c, c, c];
-      } else if (c === 9) {
-        cardToAdd = [c, c, c, c, c, c, c, c, c];
-      } else {
-        // is a power card..
-        cardToAdd = [c, c, c];
-      }
-      cards.push(...cardToAdd);
-    });
-    let cardsShuffled = shuffle(cards);
-    return cardsShuffled.map((value, idx) => {
-      const cardType = this.getCardType(idx);
-      const id = idx + 1;
-      const show = true;
-      const canPeak = idx === 0 || idx === 3;
-      return new Card(id, value, cardType, show, canPeak);
-    });
-  }
 
   render() {
     const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";

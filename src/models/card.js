@@ -1,20 +1,18 @@
 export default class Card {
+  constructor(id, value, type, peakable) {
+    this.id = id;
+    this.value = value;
+    this.type = type;
 
-    constructor(id, value, type, reveal, peakable){
-        this.id = id;
-        this.value = value;
-        this.type = type;
-        this.reveal = reveal;
-        this.peakable = peakable;
+    this.peakable = peakable;
+    this.reveal = true;
+  }
+
+  generateClasses() {
+    let className = "card";
+    if (this.peakable) {
+      className += " card--flipable";
     }
-
-    generateClasses(){
-        let className = "card";
-        if (this.peakable) {
-            className += " card--flipable";
-        }
-        return  className;
-    }
-
-
+    return className;
+  }
 }
