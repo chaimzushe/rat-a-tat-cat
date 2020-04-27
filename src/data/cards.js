@@ -1,19 +1,12 @@
 import Card from "../models/card";
 import { cardTypes } from "./cardTypes";
+import {shuffleValues} from "../util/arrayUtil";
 const values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "draw2", "peak", "swap"];
 let CARDS = [];
 
-const shuffleValues = (array) => {
-  for (let index = 0; index < array.length; index++) {
-    const element = array[index];
-    const randomIndex = Math.floor(Math.random() * index);
-    const randomElement = array[randomIndex];
-    const curValue = element.value;
-    element.value = randomElement.value;
-    randomElement.value = curValue;
-  }
-  return array;
-};
+
+
+
 
 const getCardType = (id) => {
   if (id <= 4) {

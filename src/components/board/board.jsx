@@ -53,14 +53,8 @@ export default class Board extends React.Component {
     this.setState({ [this.state.turnToPlay + "s"]: cards });
   };
 
-  startGame() {
-    const state = {
-      ...dealedCards,
-      gameOver: false,
-      turnToPlay: "humanCard",
-      turnCounter: null,
-    };
-    this.setState(state);
+   startGame() {
+    window.location.reload();
   }
 
   handleBtnClick = () => {
