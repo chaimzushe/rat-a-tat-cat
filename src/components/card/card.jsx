@@ -4,43 +4,33 @@ import "./card.scss";
 import { useDrop, useDrag } from "react-dnd";
 import { cardTypes } from "../../data/cardTypes";
 
-
 export const Card = (props) => {
-
- 
   const getRef = (card) => {
-    
     if (
       card.type === cardTypes[context.turnToPlay] ||
-      (card.type === cardTypes.discardedPile) 
+      card.type === cardTypes.discardedPile
     )
       return drop;
-    else if(card.type === cardTypes.discardedPile || card.type === cardTypes.pickingPile){
+    else if (
+      card.type === cardTypes.discardedPile ||
+      card.type === cardTypes.pickingPile
+    ) {
       return dragRef;
     }
   };
+
   const peak = () => {
-    if (!card.peakable && card.type !== cardTypes.pickingPile) {
-      return;
-    }
-    setPeaking(true);
-    if(card.type === cardTypes.pickingPile){
-      if(['peak', 'draw2', 'swap'].includes(card.value) ) {
-        context.handlePowerCards(card.value);
-      }
-      
-    }
-    if (!card.peakable) return;
-    if(context[context.turnToPlay + 's'].filter(c => c.peakable).length > 2) {
-      context.removePeakable()
-    } else{
+    if (card.type === cardTypes.pickingPile) {
+      return setPeaking(true);
+    } else if (card.peakable) {
       card.peakable = false;
+      setPeaking(true);
+      setTimeout((x) => setPeaking(false), 1000);
     }
-    setTimeout((x) => setPeaking(false), 1000);
   };
 
   const context = useContext(CardContext);
- 
+
   let { card } = props;
 
   const [peaking, setPeaking] = useState(false);
@@ -57,11 +47,6 @@ export const Card = (props) => {
   const [{ hovered, highlighted }, drop] = useDrop({
     accept: "card",
     drop: (item, monitor) => {
-      if (
-        card.type !== cardTypes.discardedPile &&
-        card.type !== cardTypes[context.turnToPlay]
-      )
-       return alert("Only drop in to your pile");
       context.addCard(item.card, card);
     },
     hover: (item, monitor) => {},
@@ -74,28 +59,43 @@ export const Card = (props) => {
   });
 
   let className = card.generateClasses();
-  if(hovered) {
-    className += ' hovered';
+  if (hovered) {
+    className += " hovered";
   }
 
-  if(highlighted) {
-    className += ' highlighted';
+  if (highlighted) {
+    className += " highlighted";
   }
-  if((card.type === context.turnToPlay || card.type === cardTypes.discardedPile || card.type === cardTypes.pickingPile) && !context.gameOver){
-    className += " candrop"
+  if (
+    (card.type === context.turnToPlay ||
+      card.type === cardTypes.discardedPile ||
+      card.swapable ||
+      card.type === cardTypes.pickingPile) &&
+    !context.gameOver
+  ) {
+    className += " candrop";
   }
 
-  const image = ((card.type === "discardedPile") || peaking || context.gameOver) ? card.value : 'back';
+  const image =
+    card.type === "discardedPile" || peaking || context.gameOver
+      ? card.value
+      : "back";
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);
   const divStyle = {
     backgroundImage: "url(" + imageUrl + ")",
-    opacity: isDragging ? 0 : 1
+    opacity: isDragging ? 0 : 1,
   };
 
   return (
     <div
       ref={getRef(card)}
-      style={(props.topOfPile || card.type === cardTypes.humanCard || card.type === cardTypes.computerCard) ? divStyle : {}}
+      style={
+        props.topOfPile ||
+        card.type === cardTypes.humanCard ||
+        card.type === cardTypes.computerCard
+          ? divStyle
+          : {}
+      }
       onClick={peak}
       className={className}
     ></div>

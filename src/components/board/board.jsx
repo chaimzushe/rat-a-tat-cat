@@ -8,10 +8,27 @@ import dealedCards from "../../data/cards";
 import { ScoreBoard } from "../ScoreBoard/ScoreBoard";
 import { cardTypes } from "../../data/cardTypes";
 import { calculateSum } from "../../util/arrayUtil";
-
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import AlertTemplate from 'react-alert-template-basic'
 import "./board.scss";
 
 export default class Board extends React.Component {
+  get discardedPile() {
+    return [...this.state.discardCard];
+  }
+
+  get pickingPile() {
+    return [...this.state.pileCards];
+  }
+
+  get humanCard() {
+    return [...this.state.humanCards];
+  }
+
+  get computerCard() {
+    return [...this.state.computerCards];
+  }
+
   constructor() {
     super();
     this.state = {
@@ -29,31 +46,73 @@ export default class Board extends React.Component {
       handlePowerCards: this.handlePowerCards,
       humanCards: this.state.humanCards,
       computerCards: this.state.computerCards,
-      removePeakable: this.removePeakable,
       turnCounter: this.state.turnCounter,
       turnToPlay: this.state.turnToPlay,
     };
   };
 
-  handlePowerCards = (value) => {
-    if (value === "peak") {
-      const cards = this.state[this.state.turnToPlay + "s"];
-      cards.forEach((c) => (c.peakable = true));
-      this.setState({ [this.state.turnToPlay + "s"]: cards });
-    } else if (value === "draw2") {
-      this.setState({ turnCounter: 1 });
+  handlePeek(playersCards) {
+    // all cards are now peakable
+    playersCards.forEach((c) => (c.peakable = true));
+  }
+
+  handleSwap(playersCards) {
+    playersCards.forEach((c) => (c.swapable = true));
+  }
+
+  getTurnToPlay(counter){
+    const nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+    if(!counter.times || counter.times >= 3) {
+      counter.times = null;
+      return nextTurn;
     } else {
-      //alert("swap");
+      counter.times += 1;
+      return this.state.turnToPlay;
+    } 
+  }
+
+  handlePowerCards = (value, playersCards, oppenentsCards, counter) => {
+    switch (value) {
+      case "peak":
+        return this.handlePeek(playersCards.cards);
+      case "swap":
+        return this.handleSwap(oppenentsCards.cards);
+      case "draw2":
+        return counter.times = 1;
     }
   };
 
-  removePeakable = () => {
-    const cards = this.state[this.state.turnToPlay + "s"];
-    cards.forEach((c) => (c.peakable = false));
-    this.setState({ [this.state.turnToPlay + "s"]: cards });
+  isPoewerCard(value){
+     return isNaN(value)
+  }
+
+  disgardCard = (draggedCard, droppedOn, playersCards, otherPlayersCards) => {
+    const turnCounter = {times: this.state.turnCounter}
+    
+    
+    if (this.isPoewerCard(draggedCard.value)) {
+      this.handlePowerCards(draggedCard.value, playersCards, otherPlayersCards, turnCounter);
+    }
+
+    draggedCard.type = cardTypes.discardedPile;
+    const discardedPile = this.discardedPile;
+    const pickingPile = this.pickingPile.filter(
+      (c) => c.id !== draggedCard.id
+    );
+    discardedPile.push(draggedCard);
+    const turnToPlay = this.getTurnToPlay(turnCounter)
+    
+    this.setState({
+      discardCard: discardedPile,
+      pileCards: pickingPile,
+      [playersCards.name]: playersCards.cards,
+      [otherPlayersCards.name]: otherPlayersCards.cards,
+      turnCounter: turnCounter.times,
+      turnToPlay
+    });
   };
 
-   startGame() {
+  startGame() {
     window.location.reload();
   }
 
@@ -71,61 +130,73 @@ export default class Board extends React.Component {
     }, 3000);
   };
 
-  addCard = (cardToAdd, cardToDiscard) => {
-    let playerCards = [...this.state[this.state.turnToPlay + "s"]];
-    const disgardPile = [...this.state.discardCard];
-    const pickPile = [...this.state.pileCards];
-
-    playerCards.forEach((c) => (c.peakable = false));
-
-    const insertcardAtIndex = playerCards.findIndex(
-      (c) => c.id === cardToDiscard.id
+  addCardToPlayersCards = (draggedCard, droppedOn, playersCards, otherPlayersCards) => {
+    
+    const nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+    droppedOn.type = cardTypes.discardedPile;
+    const discardedPile = this.discardedPile;
+    const pickingPile = this.pickingPile.filter(
+      (c) => c.id !== draggedCard.id
     );
+    discardedPile.push(droppedOn);
+    const insertcardAtIndex = playersCards.cards.findIndex( c => c.id === droppedOn.id);
+    playersCards.cards[insertcardAtIndex] = draggedCard;
+    draggedCard.type = playersCards.name.slice(0, -1);
 
-    if (cardToAdd.type === cardTypes.pickingPile) {
-      // Picked from picking pile
-      pickPile.pop();
-    } else if (cardToAdd.type === cardTypes.discardedPile) {
-      // took from disgard pile
-      disgardPile.pop();
-    }
-
-    if (
-      cardToAdd.type === cardTypes.pickingPile &&
-      cardToDiscard.type !== cardTypes[this.state.turnToPlay]
-    ) {
-      cardToAdd.type = cardTypes.discardedPile;
-      disgardPile.push(cardToAdd);
-      let turnToPlay = this.state.turnToPlay;
-      let newCount = null;
-      console.log(this.state.turnCounter);
-      if (this.state.turnCounter && this.state.turnCounter <= 2) {
-        newCount = this.state.turnCounter + 1;
-      } else {
-        turnToPlay = turnToPlay === "humanCard" ? "computerCard" : "humanCard";
-      }
-      return this.setState({
-        [playerCards]: playerCards,
-        discardCard: disgardPile,
-        pileCards: pickPile,
-        turnToPlay,
-        turnCounter: newCount,
-      });
-    } else {
-      disgardPile.push(cardToDiscard);
-      cardToDiscard.type = cardTypes.discardedPile;
-    }
-    playerCards[insertcardAtIndex] = cardToAdd;
-    cardToAdd.type = cardTypes[this.state.turnToPlay];
-
-    const turnToPlay =
-      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
     this.setState({
-      [this.state.turnToPlay + "s"]: playerCards,
-      discardCard: disgardPile,
-      pileCards: pickPile,
-      turnToPlay,
+      discardCard: discardedPile,
+      pileCards: pickingPile,
+      [playersCards.name]: playersCards.cards,
+      [otherPlayersCards.name]: otherPlayersCards.cards,
+      turnCounter: null,
+      turnToPlay: nextTurn
     });
+    
+
+  }
+
+  setPowerCards = (cards, properties, value) => {
+    cards.forEach((c) => {
+      for(let property of properties) c[property] = value
+    });
+  }
+
+
+
+  addCard = (draggedCard, droppedOn) => {
+    const { discardedPile, pickingPile, humanCard , computerCard} = cardTypes;
+    const playersCards = {
+      name: `${this.state.turnToPlay}s`,
+      cards: this[this.state.turnToPlay],
+    };
+    const opponentTurn =
+      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+    const otherPlayersCards = {
+      name: `${opponentTurn}s`,
+      cards: this[opponentTurn],
+    };
+    const AllPlayerCards = [...playersCards.cards, ...otherPlayersCards.cards ];
+    const disgardingCard = 
+      draggedCard.type === pickingPile && droppedOn.type === discardedPile;
+
+    const replacingCardFromPickPile =  draggedCard.type === pickingPile && [humanCard, computerCard].includes(droppedOn.type)
+    this.setPowerCards(AllPlayerCards, ["peakable", "swapable"], false);
+
+  
+    
+    if (disgardingCard) {
+      // if player took card from picking and placed it in disgard pile
+      this.disgardCard(draggedCard, droppedOn, playersCards, otherPlayersCards);
+    } else if (replacingCardFromPickPile) {
+      if(this.isPoewerCard(draggedCard.value)) return alert("can't add power cards to deck");
+      this.addCardToPlayersCards(draggedCard, droppedOn, playersCards, otherPlayersCards)
+      // if player took card from picking and placed it in strip
+      // handle power cards that cannot be placed
+    } else if (true) {
+      // if player took card from disgard pile and placed it in his deck
+    } else if (true) {
+      // player swapped card from other strip via swap power card
+    }
   };
 
   getCenterOfBoard = (_) => {
@@ -151,7 +222,7 @@ export default class Board extends React.Component {
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
-            {centerBoard}
+              {centerBoard}
               <button onClick={this.handleBtnClick} className="end-game">
                 <audio
                   id="audio"

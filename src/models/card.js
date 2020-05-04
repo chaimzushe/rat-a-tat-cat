@@ -6,6 +6,7 @@ export default class Card {
 
     this.peakable = peakable;
     this.reveal = true;
+    this.swapable = false;
   }
 
   generateClasses() {
