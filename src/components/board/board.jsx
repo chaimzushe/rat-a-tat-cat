@@ -8,8 +8,8 @@ import dealedCards from "../../data/cards";
 import { ScoreBoard } from "../ScoreBoard/ScoreBoard";
 import { cardTypes } from "../../data/cardTypes";
 import { calculateSum } from "../../util/arrayUtil";
-import { transitions, positions, Provider as AlertProvider } from 'react-alert'
-import AlertTemplate from 'react-alert-template-basic'
+import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
 import "./board.scss";
 
 export default class Board extends React.Component {
@@ -60,15 +60,16 @@ export default class Board extends React.Component {
     playersCards.forEach((c) => (c.swapable = true));
   }
 
-  getTurnToPlay(counter){
-    const nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
-    if(!counter.times || counter.times >= 3) {
+  getTurnToPlay(counter) {
+    const nextTurn =
+      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+    if (!counter.times || counter.times >= 3) {
       counter.times = null;
       return nextTurn;
     } else {
       counter.times += 1;
       return this.state.turnToPlay;
-    } 
+    }
   }
 
   handlePowerCards = (value, playersCards, oppenentsCards, counter) => {
@@ -78,37 +79,39 @@ export default class Board extends React.Component {
       case "swap":
         return this.handleSwap(oppenentsCards.cards);
       case "draw2":
-        return counter.times = 1;
+        return (counter.times = 1);
     }
   };
 
-  isPoewerCard(value){
-     return isNaN(value)
+  isPoewerCard(value) {
+    return isNaN(value);
   }
 
   disgardCard = (draggedCard, droppedOn, playersCards, otherPlayersCards) => {
-    const turnCounter = {times: this.state.turnCounter}
-    
-    
+    const turnCounter = { times: this.state.turnCounter };
+
     if (this.isPoewerCard(draggedCard.value)) {
-      this.handlePowerCards(draggedCard.value, playersCards, otherPlayersCards, turnCounter);
+      this.handlePowerCards(
+        draggedCard.value,
+        playersCards,
+        otherPlayersCards,
+        turnCounter
+      );
     }
 
     draggedCard.type = cardTypes.discardedPile;
     const discardedPile = this.discardedPile;
-    const pickingPile = this.pickingPile.filter(
-      (c) => c.id !== draggedCard.id
-    );
+    const pickingPile = this.pickingPile.filter((c) => c.id !== draggedCard.id);
     discardedPile.push(draggedCard);
-    const turnToPlay = this.getTurnToPlay(turnCounter)
-    
+    const turnToPlay = this.getTurnToPlay(turnCounter);
+
     this.setState({
       discardCard: discardedPile,
       pileCards: pickingPile,
       [playersCards.name]: playersCards.cards,
       [otherPlayersCards.name]: otherPlayersCards.cards,
       turnCounter: turnCounter.times,
-      turnToPlay
+      turnToPlay,
     });
   };
 
@@ -130,16 +133,24 @@ export default class Board extends React.Component {
     }, 3000);
   };
 
-  addCardToPlayersCards = (draggedCard, droppedOn, playersCards, otherPlayersCards) => {
-    
-    const nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+  addCardToPlayersCards = (
+    draggedCard,
+    droppedOn,
+    playersCards,
+    otherPlayersCards
+  ) => {
+    if (this.isPoewerCard(draggedCard.value)) {
+      return alert("can't add power cards to deck");
+    }
+    const nextTurn =
+      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
     droppedOn.type = cardTypes.discardedPile;
     const discardedPile = this.discardedPile;
-    const pickingPile = this.pickingPile.filter(
-      (c) => c.id !== draggedCard.id
-    );
+    const pickingPile = this.pickingPile.filter((c) => c.id !== draggedCard.id);
     discardedPile.push(droppedOn);
-    const insertcardAtIndex = playersCards.cards.findIndex( c => c.id === droppedOn.id);
+    const insertcardAtIndex = playersCards.cards.findIndex(
+      (c) => c.id === droppedOn.id
+    );
     playersCards.cards[insertcardAtIndex] = draggedCard;
     draggedCard.type = playersCards.name.slice(0, -1);
 
@@ -149,22 +160,18 @@ export default class Board extends React.Component {
       [playersCards.name]: playersCards.cards,
       [otherPlayersCards.name]: otherPlayersCards.cards,
       turnCounter: null,
-      turnToPlay: nextTurn
+      turnToPlay: nextTurn,
     });
-    
-
-  }
+  };
 
   setPowerCards = (cards, properties, value) => {
     cards.forEach((c) => {
-      for(let property of properties) c[property] = value
+      for (let property of properties) c[property] = value;
     });
-  }
-
-
+  };
 
   addCard = (draggedCard, droppedOn) => {
-    const { discardedPile, pickingPile, humanCard , computerCard} = cardTypes;
+    const { discardedPile, pickingPile, humanCard, computerCard } = cardTypes;
     const playersCards = {
       name: `${this.state.turnToPlay}s`,
       cards: this[this.state.turnToPlay],
@@ -175,25 +182,30 @@ export default class Board extends React.Component {
       name: `${opponentTurn}s`,
       cards: this[opponentTurn],
     };
-    const AllPlayerCards = [...playersCards.cards, ...otherPlayersCards.cards ];
-    const disgardingCard = 
+    const AllPlayerCards = [...playersCards.cards, ...otherPlayersCards.cards];
+    const disgardingCard =
       draggedCard.type === pickingPile && droppedOn.type === discardedPile;
 
-    const replacingCardFromPickPile =  draggedCard.type === pickingPile && [humanCard, computerCard].includes(droppedOn.type)
+    const replacingCardFromPickPile =
+      draggedCard.type === pickingPile &&
+      [humanCard, computerCard].includes(droppedOn.type);
+
+    const takingFromDiscardedPile =
+      draggedCard.type === discardedPile &&
+      [humanCard, computerCard].includes(droppedOn.type);
+
     this.setPowerCards(AllPlayerCards, ["peakable", "swapable"], false);
 
-  
-    
     if (disgardingCard) {
-      // if player took card from picking and placed it in disgard pile
+      // if player took card from picking and placed it in disgard pile or if player took card from disgard pile and placed it in his deck
       this.disgardCard(draggedCard, droppedOn, playersCards, otherPlayersCards);
-    } else if (replacingCardFromPickPile) {
-      if(this.isPoewerCard(draggedCard.value)) return alert("can't add power cards to deck");
-      this.addCardToPlayersCards(draggedCard, droppedOn, playersCards, otherPlayersCards)
-      // if player took card from picking and placed it in strip
-      // handle power cards that cannot be placed
-    } else if (true) {
-      // if player took card from disgard pile and placed it in his deck
+    } else if (replacingCardFromPickPile ||takingFromDiscardedPile ) {
+      this.addCardToPlayersCards(
+        draggedCard,
+        droppedOn,
+        playersCards,
+        otherPlayersCards
+      );
     } else if (true) {
       // player swapped card from other strip via swap power card
     }

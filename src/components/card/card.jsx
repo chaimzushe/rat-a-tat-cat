@@ -7,8 +7,7 @@ import { cardTypes } from "../../data/cardTypes";
 export const Card = (props) => {
   const getRef = (card) => {
     if (
-      card.type === cardTypes[context.turnToPlay] ||
-      card.type === cardTypes.discardedPile
+      card.type === cardTypes[context.turnToPlay] 
     )
       return drop;
     else if (

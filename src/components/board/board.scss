@@ -18,7 +18,8 @@
 .piles{
     display: flex;
     flex: 1;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .end-game{
