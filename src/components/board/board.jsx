@@ -57,7 +57,7 @@ export default class Board extends React.Component {
     if (playersCards.cards.every((c) => c.peakable)) {
       this.setPowerCards(playersCards.cards, ["peakable"], false);
     }
-    this.setState({[playersCards.name]: playersCards.cards});
+    this.setState({[card.type]: playersCards.cards});
   };
 
   handlePeek(playersCards) {
