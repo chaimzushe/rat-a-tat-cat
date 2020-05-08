@@ -14,6 +14,9 @@ export default class Card {
     if (this.peakable) {
       className += " card--flipable";
     }
+    if(this.swapable){
+      className += " card--swappable";
+    }
     return className;
   }
 }

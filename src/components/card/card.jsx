@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useDebugValue } from "react";
 import { CardContext } from "../../context/cards-context";
 import "./card.scss";
 import { useDrop, useDrag } from "react-dnd";
@@ -19,11 +19,15 @@ export const Card = (props) => {
   };
 
   const peak = () => {
+   
     if (card.type === cardTypes.pickingPile) {
       return setPeaking(true);
     } else if (card.peakable) {
-      card.peakable = false;
+     
       setPeaking(true);
+      context.removePowerProperties(card);
+      console.log("passed conect thing")
+      card.peakable = false;
       setTimeout((x) => setPeaking(false), 1000);
     }
   };

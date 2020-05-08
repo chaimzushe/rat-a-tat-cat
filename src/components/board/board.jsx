@@ -43,12 +43,21 @@ export default class Board extends React.Component {
     return {
       addCard: this.addCard,
       gameOver: this.state.gameOver,
-      handlePowerCards: this.handlePowerCards,
-      humanCards: this.state.humanCards,
-      computerCards: this.state.computerCards,
-      turnCounter: this.state.turnCounter,
       turnToPlay: this.state.turnToPlay,
+      removePowerProperties: this.removePowerProperties,
     };
+  };
+
+  removePowerProperties = (card) => {
+    const cards =
+      card.type === cardTypes.humanCard ? this.humanCard : this.computerCard;
+    const name = `${this.state.turnToPlay}s`;
+    const playersCards = { name, cards };
+    console.log(playersCards);
+    if (playersCards.cards.every((c) => c.peakable)) {
+      this.setPowerCards(playersCards.cards, ["peakable"], false);
+    }
+    this.setState({[playersCards.name]: playersCards.cards});
   };
 
   handlePeek(playersCards) {
@@ -164,7 +173,7 @@ export default class Board extends React.Component {
     });
   };
 
-  setPowerCards = (cards, properties, value) => {
+  setPowerCards = (cards, properties, value, card = null) => {
     cards.forEach((c) => {
       for (let property of properties) c[property] = value;
     });
@@ -172,6 +181,7 @@ export default class Board extends React.Component {
 
   addCard = (draggedCard, droppedOn) => {
     const { discardedPile, pickingPile, humanCard, computerCard } = cardTypes;
+    if (draggedCard.type === droppedOn.type) return;
     const playersCards = {
       name: `${this.state.turnToPlay}s`,
       cards: this[this.state.turnToPlay],
@@ -199,7 +209,7 @@ export default class Board extends React.Component {
     if (disgardingCard) {
       // if player took card from picking and placed it in disgard pile or if player took card from disgard pile and placed it in his deck
       this.disgardCard(draggedCard, droppedOn, playersCards, otherPlayersCards);
-    } else if (replacingCardFromPickPile ||takingFromDiscardedPile ) {
+    } else if (replacingCardFromPickPile || takingFromDiscardedPile) {
       this.addCardToPlayersCards(
         draggedCard,
         droppedOn,
