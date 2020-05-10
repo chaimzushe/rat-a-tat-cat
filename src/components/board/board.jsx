@@ -1,6 +1,6 @@
 import React from "react";
 import Backend from "react-dnd-html5-backend";
-import { DndProvider } from "react-dnd";
+
 import { CardContext } from "../../context/cards-context";
 import { Player } from "../Player/Player";
 import { Deck } from "../deck/deck";
@@ -11,8 +11,9 @@ import { calculateSum } from "../../util/arrayUtil";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 import "./board.scss";
-import MultiBackend from 'react-dnd-multi-backend';
-console.log(MultiBackend);
+import { DndProvider } from 'react-dnd-multi-backend';
+import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
+
 
 
 export default class Board extends React.Component {
@@ -281,7 +282,7 @@ export default class Board extends React.Component {
     const centerBoard = this.getCenterOfBoard();
     const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
     return (
-      <DndProvider backend={Backend}>
+      <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>
           <div className="board">
             <Player cards={this.state.computerCards} />
