@@ -57,7 +57,7 @@ export default class Board extends React.Component {
     if (playersCards.cards.every((c) => c.peakable)) {
       this.setPowerCards(playersCards.cards, ["peakable"], false);
     }
-    this.setState({[card.type]: playersCards.cards});
+    this.setState({ [card.type]: playersCards.cards });
   };
 
   handlePeek(playersCards) {
@@ -69,10 +69,10 @@ export default class Board extends React.Component {
     playersCards.forEach((c) => (c.swapable = true));
   }
 
-  getTurnToPlay(counter) {
+  getTurnToPlay(counter, value) {
     const nextTurn =
       this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
-    if (!counter.times || counter.times >= 3) {
+    if ((!counter.times || counter.times >= 3) && value !== "swap") {
       counter.times = null;
       return nextTurn;
     } else {
@@ -112,7 +112,7 @@ export default class Board extends React.Component {
     const discardedPile = this.discardedPile;
     const pickingPile = this.pickingPile.filter((c) => c.id !== draggedCard.id);
     discardedPile.push(draggedCard);
-    const turnToPlay = this.getTurnToPlay(turnCounter);
+    const turnToPlay = this.getTurnToPlay(turnCounter, draggedCard.value);
 
     this.setState({
       discardCard: discardedPile,
@@ -141,6 +141,33 @@ export default class Board extends React.Component {
       this.setState({ gameOver: true, humanCards });
     }, 3000);
   };
+
+  handleSwapPicked(
+    cardWantsToTake,
+    cardToGiveAway,
+    playersCards,
+    otherPlayersCards
+  ) {
+    const nextTurn =
+      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+    const indexOfCardToFGiveAway = playersCards.cards.findIndex(
+      (c) => c.id === cardToGiveAway.id
+    );
+    const indexOfCardToTake = otherPlayersCards.cards.findIndex(
+      (c) => c.id === cardWantsToTake.id
+    );
+    const oldTypeOfcardWantsToTake = cardWantsToTake.type;
+    cardWantsToTake.type = cardToGiveAway.type;
+    cardToGiveAway.type = oldTypeOfcardWantsToTake;
+    playersCards.cards[indexOfCardToFGiveAway] = cardWantsToTake;
+    otherPlayersCards.cards[indexOfCardToTake] = cardToGiveAway;
+    this.setState({
+      [playersCards.name]: playersCards.cards,
+      [otherPlayersCards.name]: otherPlayersCards.cards,
+      turnCounter: null,
+      turnToPlay: nextTurn,
+    });
+  }
 
   addCardToPlayersCards = (
     draggedCard,
@@ -204,6 +231,10 @@ export default class Board extends React.Component {
       draggedCard.type === discardedPile &&
       [humanCard, computerCard].includes(droppedOn.type);
 
+    const isSwapping =
+      [humanCard, computerCard].includes(droppedOn.type) &&
+      [humanCard, computerCard].includes(draggedCard.type);
+
     this.setPowerCards(AllPlayerCards, ["peakable", "swapable"], false);
 
     if (disgardingCard) {
@@ -216,7 +247,13 @@ export default class Board extends React.Component {
         playersCards,
         otherPlayersCards
       );
-    } else if (true) {
+    } else if (isSwapping) {
+      this.handleSwapPicked(
+        draggedCard,
+        droppedOn,
+        playersCards,
+        otherPlayersCards
+      );
       // player swapped card from other strip via swap power card
     }
   };

@@ -6,27 +6,23 @@ import { cardTypes } from "../../data/cardTypes";
 
 export const Card = (props) => {
   const getRef = (card) => {
-    if (
-      card.type === cardTypes[context.turnToPlay] 
-    )
-      return drop;
+    if (card.type === cardTypes[context.turnToPlay]) return drop;
     else if (
       card.type === cardTypes.discardedPile ||
-      card.type === cardTypes.pickingPile
+      card.type === cardTypes.pickingPile ||
+      card.swapable
     ) {
       return dragRef;
     }
   };
 
   const peak = () => {
-   
     if (card.type === cardTypes.pickingPile) {
       return setPeaking(true);
     } else if (card.peakable) {
-     
       setPeaking(true);
       context.removePowerProperties(card);
-      console.log("passed conect thing")
+      console.log("passed conect thing");
       card.peakable = false;
       setTimeout((x) => setPeaking(false), 1000);
     }
