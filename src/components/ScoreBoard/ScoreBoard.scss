@@ -18,7 +18,7 @@
 
 .winner {   
     &:before{
-        content: 'Winner';
+        content: 'Winner!';
         animation: tada 1s infinite ease-in;
         background-color: #2540b7;
         display: block;
