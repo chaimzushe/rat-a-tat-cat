@@ -53,11 +53,13 @@ export default class Board extends React.Component {
       card.type === cardTypes.humanCard ? this.humanCard : this.computerCard;
     const name = `${this.state.turnToPlay}s`;
     const playersCards = { name, cards };
-    console.log(playersCards);
+
+    let nextTurn = this.state.turnToPlay;
     if (playersCards.cards.every((c) => c.peakable)) {
       this.setPowerCards(playersCards.cards, ["peakable"], false);
+       nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
     }
-    this.setState({ [card.type]: playersCards.cards });
+    this.setState({ [card.type]: playersCards.cards, turnToPlay: nextTurn });
   };
 
   handlePeek(playersCards) {
@@ -72,7 +74,7 @@ export default class Board extends React.Component {
   getTurnToPlay(counter, value) {
     const nextTurn =
       this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
-    if ((!counter.times || counter.times >= 3) && value !== "swap") {
+    if ((!counter.times || counter.times >= 3) && value !== "swap" && value !== "peak") {
       counter.times = null;
       return nextTurn;
     } else {
