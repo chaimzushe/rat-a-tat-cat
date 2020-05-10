@@ -13,8 +13,13 @@ import AlertTemplate from "react-alert-template-basic";
 import "./board.scss";
 import { DndProvider } from 'react-dnd-multi-backend';
 import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
+import { Preview } from 'react-dnd-multi-backend';
+import { Card } from "../card/card";
 
-
+const generatePreview = ({itemType, item, style}) => {
+  // render your preview
+  return   <Card isPreiview card={item.card}/> 
+};
 
 export default class Board extends React.Component {
   get discardedPile() {
@@ -284,6 +289,7 @@ export default class Board extends React.Component {
     return (
       <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>
+        <Preview>{generatePreview}</Preview>
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">

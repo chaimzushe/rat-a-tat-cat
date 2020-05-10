@@ -84,17 +84,18 @@ export const Card = (props) => {
     backgroundImage: "url(" + imageUrl + ")",
     opacity: isDragging ? 0 : 1,
   };
+ 
+  const cardStyle =
+    props.topOfPile ||
+    card.type === cardTypes.humanCard ||
+    card.type === cardTypes.computerCard
+      ? divStyle
+      : {};
 
   return (
     <div
       ref={getRef(card)}
-      style={
-        props.topOfPile ||
-        card.type === cardTypes.humanCard ||
-        card.type === cardTypes.computerCard
-          ? divStyle
-          : {}
-      }
+      style={cardStyle}
       onClick={peak}
       className={className}
     ></div>
