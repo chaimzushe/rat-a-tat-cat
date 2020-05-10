@@ -18,7 +18,7 @@ import { Card } from "../card/card";
 
 const generatePreview = ({itemType, item, style}) => {
   // render your preview
-  return   <Card isPreiview card={item.card}/> 
+  return  <span style={style}>  <Card isPreiview card={item.card}/>  </span> 
 };
 
 export default class Board extends React.Component {
