@@ -1,5 +1,6 @@
 import React from "react";
 import Backend from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import { CardContext } from "../../context/cards-context";
 import { Player } from "../Player/Player";
 import { Deck } from "../deck/deck";
@@ -11,7 +12,8 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 import "./board.scss";
 import MultiBackend from 'react-dnd-multi-backend';
-import { DndProvider } from 'react-dnd-multi-backend';
+console.log(MultiBackend);
+
 
 export default class Board extends React.Component {
   get discardedPile() {
