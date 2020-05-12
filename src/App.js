@@ -1,11 +1,14 @@
 import React from 'react';
 import Board from "./components/board/board";
+import { useAlert } from 'react-alert'
 import './App.css';
 
-function App() {
+const App = () => {
+  const alert = useAlert()
+ 
   return (
-         <Board/>
-    );
+    <Board alert={alert}/>
+  )
 }
 
 export default App;

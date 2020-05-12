@@ -40,7 +40,8 @@ export default class Board extends React.Component {
     return [...this.state.computerCards];
   }
 
-  constructor() {
+  constructor({alert}) {
+
     super();
     this.state = {
       ...dealedCards,
@@ -48,6 +49,8 @@ export default class Board extends React.Component {
       turnToPlay: "humanCard",
       turnCounter: null,
     };
+    this.alert = alert;
+    
   }
 
   getContextValue = () => {
@@ -194,7 +197,7 @@ export default class Board extends React.Component {
     otherPlayersCards
   ) => {
     if (this.isPoewerCard(draggedCard.value)) {
-      return alert("can't add power cards to deck");
+      return this.alert.show("can't add power cards to deck");
     }
     const nextTurn =
       this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
