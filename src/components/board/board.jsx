@@ -17,9 +17,9 @@ import { Preview } from "react-dnd-multi-backend";
 
 const generatePreview = ({ itemType, item, style }) => {
   // render your preview
-  const {card} = item; 
+  const { card } = item;
   const imageUrl = require(`../../../public/assets/images/${card.value}.jpg`);
-  style.backgroundImage =  `url(${imageUrl})`;
+  style.backgroundImage = `url(${imageUrl})`;
   return <div style={style} className="card"></div>;
 };
 
@@ -40,8 +40,7 @@ export default class Board extends React.Component {
     return [...this.state.computerCards];
   }
 
-  constructor({alert}) {
-
+  constructor({ alert }) {
     super();
     this.state = {
       ...dealedCards,
@@ -50,7 +49,6 @@ export default class Board extends React.Component {
       turnCounter: null,
     };
     this.alert = alert;
-    
   }
 
   getContextValue = () => {
@@ -229,13 +227,20 @@ export default class Board extends React.Component {
 
   addCard = (draggedCard, droppedOn) => {
     const { discardedPile, pickingPile, humanCard, computerCard } = cardTypes;
-    if (draggedCard.type === droppedOn.type) return;
+    const opponentTurn =
+      this.state.turnToPlay === humanCard ? computerCard : humanCard;
+
+    if (
+      draggedCard.type === droppedOn.type ||
+      (draggedCard.type === opponentTurn &&
+        [discardedPile, pickingPile].includes(droppedOn.type))
+    )
+      return;
     const playersCards = {
       name: `${this.state.turnToPlay}s`,
       cards: this[this.state.turnToPlay],
     };
-    const opponentTurn =
-      this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+
     const otherPlayersCards = {
       name: `${opponentTurn}s`,
       cards: this[opponentTurn],
