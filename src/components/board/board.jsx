@@ -11,14 +11,16 @@ import { calculateSum } from "../../util/arrayUtil";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import AlertTemplate from "react-alert-template-basic";
 import "./board.scss";
-import { DndProvider } from 'react-dnd-multi-backend';
-import HTML5toTouch from 'react-dnd-multi-backend/dist/esm/HTML5toTouch';
-import { Preview } from 'react-dnd-multi-backend';
-import { Card } from "../card/card";
+import { DndProvider } from "react-dnd-multi-backend";
+import HTML5toTouch from "react-dnd-multi-backend/dist/esm/HTML5toTouch";
+import { Preview } from "react-dnd-multi-backend";
 
-const generatePreview = ({itemType, item, style}) => {
+const generatePreview = ({ itemType, item, style }) => {
   // render your preview
-  return  <span style={style}>  <Card isPreiview card={item.card}/>  </span> 
+  const {card} = item; 
+  const imageUrl = require(`../../../public/assets/images/${card.value}.jpg`);
+  style.backgroundImage =  `url(${imageUrl})`;
+  return <div style={style} className="card"></div>;
 };
 
 export default class Board extends React.Component {
@@ -66,7 +68,8 @@ export default class Board extends React.Component {
     let nextTurn = this.state.turnToPlay;
     if (playersCards.cards.every((c) => c.peakable)) {
       this.setPowerCards(playersCards.cards, ["peakable"], false);
-       nextTurn = this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
+      nextTurn =
+        this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
     }
     this.setState({ [card.type]: playersCards.cards, turnToPlay: nextTurn });
   };
@@ -83,7 +86,11 @@ export default class Board extends React.Component {
   getTurnToPlay(counter, value) {
     const nextTurn =
       this.state.turnToPlay === "humanCard" ? "computerCard" : "humanCard";
-    if ((!counter.times || counter.times >= 3) && value !== "swap" && value !== "peak") {
+    if (
+      (!counter.times || counter.times >= 3) &&
+      value !== "swap" &&
+      value !== "peak"
+    ) {
       counter.times = null;
       return nextTurn;
     } else {
@@ -289,7 +296,7 @@ export default class Board extends React.Component {
     return (
       <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>
-        <Preview>{generatePreview}</Preview>
+          <Preview>{generatePreview}</Preview>
           <div className="board">
             <Player cards={this.state.computerCards} />
             <div className="actions">
