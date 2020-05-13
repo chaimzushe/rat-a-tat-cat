@@ -285,14 +285,25 @@ export default class Board extends React.Component {
   };
 
   getCenterOfBoard = (_) => {
+    const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
     return this.state.gameOver ? (
-      <ScoreBoard
-        human={calculateSum(this.state.humanCards)}
-        computer={calculateSum(this.state.computerCards)}
-      />
+      <>
+        <ScoreBoard
+          human={calculateSum(this.state.humanCards)}
+          computer={calculateSum(this.state.computerCards)}
+        />
+        <button onClick={this.handleBtnClick} className="end-game">
+          <audio id="audio" src={require("../../audio/rat-a.mp3")}></audio>
+          {btnTxet}
+        </button>
+      </>
     ) : (
       <div className="piles">
         <Deck cards={this.state.pileCards} />
+        <button onClick={this.handleBtnClick} className="end-game">
+          <audio id="audio" src={require("../../audio/rat-a.mp3")}></audio>
+          {btnTxet}
+        </button>
         <Deck cards={this.state.discardCard} />
       </div>
     );
@@ -300,23 +311,14 @@ export default class Board extends React.Component {
 
   render() {
     const centerBoard = this.getCenterOfBoard();
-    const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
+   
     return (
       <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>
           <Preview>{generatePreview}</Preview>
           <div className="board">
             <Player cards={this.state.computerCards} />
-            <div className="actions">
-              {centerBoard}
-              <button onClick={this.handleBtnClick} className="end-game">
-                <audio
-                  id="audio"
-                  src={require("../../audio/rat-a.mp3")}
-                ></audio>
-                {btnTxet}
-              </button>
-            </div>
+            <div className="actions">{centerBoard}</div>
             <Player cards={this.state.humanCards} />
           </div>
         </CardContext.Provider>
