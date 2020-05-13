@@ -1,6 +1,4 @@
 import React from "react";
-import Backend from "react-dnd-html5-backend";
-
 import { CardContext } from "../../context/cards-context";
 import { Player } from "../Player/Player";
 import { Deck } from "../deck/deck";
@@ -8,14 +6,13 @@ import dealedCards from "../../data/cards";
 import { ScoreBoard } from "../ScoreBoard/ScoreBoard";
 import { cardTypes } from "../../data/cardTypes";
 import { calculateSum } from "../../util/arrayUtil";
-import { transitions, positions, Provider as AlertProvider } from "react-alert";
-import AlertTemplate from "react-alert-template-basic";
+
 import "./board.scss";
 import { DndProvider } from "react-dnd-multi-backend";
 import HTML5toTouch from "react-dnd-multi-backend/dist/esm/HTML5toTouch";
 import { Preview } from "react-dnd-multi-backend";
 
-const generatePreview = ({ itemType, item, style }) => {
+const generatePreview = ({ item, style }) => {
   // render your preview
   const { card } = item;
   const imageUrl = require(`../../../public/assets/images/${card.value}.jpg`);
