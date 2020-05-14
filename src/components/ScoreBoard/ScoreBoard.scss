@@ -1,12 +1,9 @@
 .scores{
-    flex: 1;
-    display: flex;
-    justify-content: space-around;
     list-style: none;
 }
 
 .score{
-    background-color: #ff1d1d;;
+    background-color: #381a1a;;
     color:white;
     padding: 12px;
     font-size: 30px; 
@@ -14,6 +11,8 @@
     width: 200px;
     text-align: center;
     position: relative;
+    margin-top: 22px;
+    font-family: sans-serif;
 }
 
 .winner {   
@@ -29,6 +28,24 @@
         font-size: 17px;
         right: 0px;
 
+    }
+}
+
+.new-game{
+  display: block;
+    border: 2px solid brown;
+    color: brown;
+    padding: 12px;
+    border-radius: 50px;
+    text-align: center;
+    width: 200px;
+    outline: none;
+    &:hover{
+      color: white;
+      background-color: brown;
+      cursor: pointer;
+      height: 50px;
+      font-size: 18px;
     }
 }
 

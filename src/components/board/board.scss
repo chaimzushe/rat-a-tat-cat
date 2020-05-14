@@ -13,17 +13,22 @@
     justify-content: center;
 }
 
-.actions{
-    display: flex;
-    margin: 30px 0px;
-    height: 300px;
-    align-items: center;
+.actions {
+    height: 300px; 
+    &--lined{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+    }
 }
 
 .piles{
     display: flex;
     justify-content: space-around;
     align-items: center;
+
+
 }
 
 .end-game{
@@ -32,14 +37,16 @@
     border-radius: 42px;
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #980000;
+    color:brown ;
+    background-color: white;
+    border: 2px solid brown;
     font-size: 26px;
     outline: none;
     cursor: pointer;
     white-space: nowrap;
     &:hover{
-       color: #980000;
-       background-color: white;
+       background-color: brown;
+       color: white;
         
     }
 }

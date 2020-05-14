@@ -144,18 +144,15 @@ export default class Board extends React.Component {
     window.location.reload();
   }
 
-  handleBtnClick = () => {
-    if (this.state.gameOver) {
-      return this.startGame();
-    }
+  endGame = () => {
     var audio = document.getElementById("audio");
-    audio.play();
+    //audio.play();
 
     setTimeout(() => {
       const humanCards = [...this.state.humanCards];
       humanCards.forEach((c) => (c.peakable = false));
       this.setState({ gameOver: true, humanCards });
-    }, 3000);
+    }, 2000);
   };
 
   handleSwapPicked(
@@ -282,24 +279,20 @@ export default class Board extends React.Component {
   };
 
   getCenterOfBoard = (_) => {
-    const btnTxet = this.state.gameOver ? "New Game" : "Rat-Tat-Cat";
     return this.state.gameOver ? (
       <>
         <ScoreBoard
+        startGame={this.startGame}
           human={calculateSum(this.state.humanCards)}
           computer={calculateSum(this.state.computerCards)}
         />
-        <button onClick={this.handleBtnClick} className="end-game">
-          <audio id="audio" src={require("../../audio/rat-a.mp3")}></audio>
-          {btnTxet}
-        </button>
       </>
     ) : (
       <div className="piles">
         <Deck cards={this.state.pileCards} />
-        <button onClick={this.handleBtnClick} className="end-game">
+        <button onClick={this.endGame} className="end-game">
           <audio id="audio" src={require("../../audio/rat-a.mp3")}></audio>
-          {btnTxet}
+          {"Rat-Tat-Cat"}
         </button>
         <Deck cards={this.state.discardCard} />
       </div>
@@ -308,14 +301,15 @@ export default class Board extends React.Component {
 
   render() {
     const centerBoard = this.getCenterOfBoard();
-   
+   let stripClass = "actions";
+   if(this.state.gameOver) stripClass += " actions--lined";
     return (
       <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>
           <Preview>{generatePreview}</Preview>
           <div className="board">
             <Player cards={this.state.computerCards} />
-            <div className="actions">{centerBoard}</div>
+            <div className={stripClass}>{centerBoard}</div>
             <Player cards={this.state.humanCards} />
           </div>
         </CardContext.Provider>
