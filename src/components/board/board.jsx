@@ -226,8 +226,9 @@ export default class Board extends React.Component {
     const droppedOnPile = [this.discardedPile, this.pickingPile][pileIndex];
     const draggedCard = droppedOnPile[droppedOnPile.length - 1];
     droppedOn.animate = true;
+    droppedOn.show = true;
     setTimeout( _ => {
-      this.setPowerCards(this.computerCard, ["animate"], false);
+      this.setPowerCards(this.computerCard, ["animate", "show"], false);
       this.addCard( draggedCard, droppedOn);
     }, 2000) ;
    

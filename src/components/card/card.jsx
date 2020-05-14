@@ -76,7 +76,7 @@ export const Card = (props) => {
   }
 
   const image =
-    card.type === "discardedPile" || peaking || context.gameOver
+    card.type === "discardedPile" || peaking || context.gameOver || card.show
       ? card.value
       : "back";
   let imageUrl = require(`../../../public/assets/images/${image}.jpg`);

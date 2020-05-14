@@ -3,10 +3,7 @@ export default class Card {
     this.id = id;
     this.value = value;
     this.type = type;
-
     this.peakable = peakable;
-    this.reveal = true;
-    this.swapable = false;
   }
 
   generateClasses() {
