@@ -17,6 +17,9 @@ export default class Card {
     if(this.swapable){
       className += " card--swappable";
     }
+    if(this.animate){
+      className += " card--animate";
+    }
     return className;
   }
 }

@@ -219,6 +219,20 @@ export default class Board extends React.Component {
     });
   };
 
+  makeComputerGo() {
+    const randomIndex = Math.floor(Math.random() * 4);
+    const droppedOn = this.computerCard[randomIndex];
+    const pileIndex = Math.round(Math.random());
+    const droppedOnPile = [this.discardedPile, this.pickingPile][pileIndex];
+    const draggedCard = droppedOnPile[droppedOnPile.length - 1];
+    droppedOn.animate = true;
+    setTimeout( _ => {
+      this.setPowerCards(this.computerCard, ["animate"], false);
+      this.addCard( draggedCard, droppedOn);
+    }, 2000) ;
+   
+  }
+
   addCard = (draggedCard, droppedOn) => {
     const { discardedPile, pickingPile, humanCard, computerCard } = cardTypes;
     const opponentTurn =
@@ -276,13 +290,16 @@ export default class Board extends React.Component {
       );
       // player swapped card from other strip via swap power card
     }
+    if (this.state.turnToPlay === computerCard) {
+      this.makeComputerGo();
+    }
   };
 
   getCenterOfBoard = (_) => {
     return this.state.gameOver ? (
       <>
         <ScoreBoard
-        startGame={this.startGame}
+          startGame={this.startGame}
           human={calculateSum(this.state.humanCards)}
           computer={calculateSum(this.state.computerCards)}
         />
@@ -301,8 +318,8 @@ export default class Board extends React.Component {
 
   render() {
     const centerBoard = this.getCenterOfBoard();
-   let stripClass = "actions";
-   if(this.state.gameOver) stripClass += " actions--lined";
+    let stripClass = "actions";
+    if (this.state.gameOver) stripClass += " actions--lined";
     return (
       <DndProvider options={HTML5toTouch}>
         <CardContext.Provider value={this.getContextValue()}>

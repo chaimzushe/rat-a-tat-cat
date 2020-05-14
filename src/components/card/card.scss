@@ -43,6 +43,9 @@
       cursor: pointer;
     }
   }
+  &--animate{
+    animation: pulse 1s infinite ease-in;
+  }
 }
 
 .candrop {
